@@ -1,6 +1,6 @@
 Keypirinha Plugin: Svc
 =========
-# Open known Windows Shell folders
+# Overview
 
 This plugin for Keypirinha lets you work with Windows services.
 
