@@ -19,6 +19,9 @@ _OpenSCManager = declare_fnc(_advapi32, "OpenSCManagerA", ct.c_void_p,          
 _OpenService = declare_fnc(_advapi32, "OpenServiceA",ct.c_void_p,               \
     [ct.c_char_p, ct.c_char_p, ct.c_ulong])
 
+_CloseServiceHandle = declare_fnc(_advapi32, "CloseServiceHandle", ct.c_bool,   \
+    [ct.c_char_p])
+
 class  ENUM_SERVICE_STATUS(ct.Structure):
     _fields_ = [
         ("service_name", ct.c_char_p), 
@@ -67,14 +70,11 @@ class WinServiceUtils:
         pass
 
     #
-    # Kernel32.dll
-    #
-    def CloseHandle(self, handle):
-        return ct.windll.kernel32.CloseHandle(handle)
-
-    #
     # advapi32.dll
     #
+    def CloseServiceHandle(self, handle):
+        return _CloseServiceHandle(handle)
+
     def OpenSCManager(self, machine_name = None, database_name = None, desired_access = 0):
         return _OpenSCManager(machine_name, database_name, desired_access)
 
@@ -97,30 +97,32 @@ class WinServiceUtils:
 
                
 
-    def EnumServicesStatus(self, scm_handle, service_type, service_state):
+    def EnumServicesStatus(self, service_type, service_state):
+        scm = self.OpenSCManager(None, None, 5)
+
         buf_size = 0
         bytes_needed = ct.c_ulong(0)
         services_returned = ct.c_ulong(0)
         resume_handle = ct.c_void_p(None)
-        ret = _EnumServicesStatus(scm_handle, service_type, service_state, None, buf_size, ct.byref(bytes_needed), ct.byref(services_returned), ct.byref(resume_handle))
+        ret = _EnumServicesStatus(scm, service_type, service_state, None, buf_size, ct.byref(bytes_needed), ct.byref(services_returned), ct.byref(resume_handle))
         
         buf_size = bytes_needed.value
         service_data = ct.create_string_buffer(buf_size)
-        ret = _EnumServicesStatus(scm_handle, service_type, service_state, 
+        ret = _EnumServicesStatus(scm, service_type, service_state, 
             service_data, buf_size, ct.byref(bytes_needed), ct.byref(services_returned), ct.byref(resume_handle))
         
         svcs = ct.cast(service_data, ct.POINTER(ENUM_SERVICE_STATUS))
 
+        self.CloseServiceHandle(scm)
+
         return { bytes.decode(svcs[i].service_name) : self.get_service_info(svcs[i]) for i in range(services_returned.value) }
 
 
-        
-api = WinServiceUtils()
-scm = api.OpenSCManager(None,None,5)
-ret = api.EnumServicesStatus(scm,0x30,0x3)
-print(ret)
 
 '''
+BOOL CloseServiceHandle(
+  [in] SC_HANDLE hSCObject
+);
 SC_HANDLE OpenSCManagerA(
   [in, optional] LPCSTR lpMachineName,
   [in, optional] LPCSTR lpDatabaseName,
@@ -146,5 +148,15 @@ typedef struct _ENUM_SERVICE_STATUSA {
   LPSTR          lpDisplayName;
   SERVICE_STATUS ServiceStatus;
 } ENUM_SERVICE_STATUSA, *LPENUM_SERVICE_STATUSA;
+
+BOOL QueryServiceStatusEx(
+  [in]            SC_HANDLE      hService,
+  [in]            SC_STATUS_TYPE InfoLevel,
+  [out, optional] LPBYTE         lpBuffer,
+  [in]            DWORD          cbBufSize,
+  [out]           LPDWORD        pcbBytesNeeded
+);
+
+
 '''
 
