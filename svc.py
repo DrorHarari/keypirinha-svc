@@ -4,21 +4,33 @@ from .svcutil import WinServiceUtils
 import os
 
 class Svc(kp.Plugin):
-
-    ITEMCAT_SVC = kp.ItemCategory.USER_BASE + 1         # 1001
-    ITEMCAT_ACTION = kp.ItemCategory.USER_BASE + 2      # 1002
+    # Categories
+    ITEMCAT_SVC     = kp.ItemCategory.USER_BASE + 1         # 1001
+    ITEMCAT_RUNNING = kp.ItemCategory.USER_BASE + 2         # 1002
+    ITEMCAT_STOPPED = kp.ItemCategory.USER_BASE + 3         # 1003
+    ITEMCAT_PAUSED  = kp.ItemCategory.USER_BASE + 4         # 1004
 
     # Plugin actions
-    ACTION_START = "start"
-    ACTION_STOP = "stop"
-    ACTION_RESTART = "restart"
-    ACTION_STATUS = "status"
-    ACTION_MANUAL = "start-ma"
+    ITEMACT_START    = "start"
+    ITEMACT_STOP     = "stop"
+    ITEMACT_RESTART  = "restart"
+    ITEMACT_PAUSE    = "pause"
+    ITEMACT_RESUME   = "resume"
     
     service_catalog = {}
 
     def __init__(self):
         super().__init__()
+        
+        start_action = self.create_action(name=self.ITEMACT_START, label="Start", short_desc="Start service")
+        stop_action = self.create_action(name=self.ITEMACT_STOP, label="Stop", short_desc="Stop service")
+        restart_action = self.create_action(name=self.ITEMACT_RESTART, label="Restart", short_desc="Restart service")
+        pause_action = self.create_action(name=self.ITEMACT_PAUSE, label="Pause", short_desc="Pause service")
+        resume_action = self.create_action(name=self.ITEMACT_RESUME, label="Resume", short_desc="Resume service")
+
+        self.set_actions(self.ITEMCAT_RUNNING, [stop_action, restart_action, pause_action])
+        self.set_actions(self.ITEMCAT_STOPPED, [start_action, restart_action, resume_action])
+        self.set_actions(self.ITEMCAT_PAUSED, [stop_action, resume_action, restart_action])
 
     def on_start(self):
         pass
@@ -49,17 +61,7 @@ class Svc(kp.Plugin):
 
         self.set_catalog(catalog)
 
-        actions = []
-        actions.append(self.create_action(
-            name="execute",
-            label="Execute command",
-            short_desc="Executes the selected command"
-        ))
-        self.set_actions(self.ITEMCAT_SVC, actions)
-        self.set_actions(self.ITEMCAT_ACTION, actions)
-
-
-    def add_actions(self, user_input, items_chain):
+    def set_service_category(self, user_input, items_chain):
         item = items_chain[-1]
         sn = item.target()
         suggestions = []
@@ -95,7 +97,7 @@ class Svc(kp.Plugin):
             print(f"categoey = {items_chain[-1].category()}, target={items_chain[-1].target()}")
 
         if items_chain and items_chain[-1].category() == self.ITEMCAT_SVC:
-            self.add_actions(user_input, items_chain)
+            self.set_service_category(user_input, items_chain)
             return
         elif not current_item.category() == kp.ItemCategory.REFERENCE and not user_input:
             return
