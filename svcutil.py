@@ -18,11 +18,12 @@ class SERVICE_STATUS_PROCESS(ct.Structure):
         ("service_flags", ct.c_ulong)
     ]
 
+
 class ENUM_SERVICE_STATUS(ct.Structure):
     _fields_ = [
-        ("service_name", ct.c_char_p), 
-        ("display_name", ct.c_char_p), 
-        ("service_status", ct.c_ulong), 
+        ("service_name", ct.c_char_p),
+        ("display_name", ct.c_char_p),
+        ("service_status", ct.c_ulong),
         ("service_type", ct.c_ulong),
         ("current_state", ct.c_ulong),
         ("controls_accepted", ct.c_ulong),
@@ -32,78 +33,82 @@ class ENUM_SERVICE_STATUS(ct.Structure):
         ("wait_hint", ct.c_ulong)
     ]
 
+
 class SERVICE_CONTROL_STATUS_REASON_PARAMS(ct.Structure):
     _fields_ = [
-        ("reason", ct.c_ulong), 
-        ("comment", ct.c_char_p), 
+        ("reason", ct.c_ulong),
+        ("comment", ct.c_char_p),
         ("service_status", SERVICE_STATUS_PROCESS)
     ]
 
+
 class WinServiceUtils:
     # Service types
-    ST_SERVICE_DRIVER 				= 0x0000000B
-    ST_SERVICE_FILE_SYSTEM_DRIVER	= 0x00000002
-    ST_SERVICE_KERNEL_DRIVER		= 0x00000001
-    ST_SERVICE_WIN32				= 0x00000030
-    ST_SERVICE_WIN32_OWN_PROCESS	= 0x00000010
-    ST_SERVICE_WIN32_SHARE_PROCESS	= 0x00000020
+    ST_SERVICE_DRIVER               = 0x0000000B
+    ST_SERVICE_FILE_SYSTEM_DRIVER   = 0x00000002
+    ST_SERVICE_KERNEL_DRIVER        = 0x00000001
+    ST_SERVICE_WIN32                = 0x00000030
+    ST_SERVICE_WIN32_OWN_PROCESS    = 0x00000010
+    ST_SERVICE_WIN32_SHARE_PROCESS  = 0x00000020
 
     # Service states for enumeration
-    SS_SERVICE_ACTIVE		= 0x00000001
-    SS_SERVICE_INACTIVE		= 0x00000002
-    SS_SERVICE_STATE_ALL	= 0x00000003
+    SS_SERVICE_ACTIVE       = 0x00000001
+    SS_SERVICE_INACTIVE     = 0x00000002
+    SS_SERVICE_STATE_ALL    = 0x00000003
 
     # Service States for CurrentState
-    SERVICE_STOPPED         =              0x00000001
-    SERVICE_START_PENDING   =              0x00000002
-    SERVICE_STOP_PENDING    =              0x00000003
-    SERVICE_RUNNING         =              0x00000004
-    SERVICE_CONTINUE_PENDING=              0x00000005
-    SERVICE_PAUSE_PENDING   =              0x00000006
-    SERVICE_PAUSED          =              0x00000007
+    SERVICE_START_PENDING    = 0x00000002
+    SERVICE_STOPPED          = 0x00000001
+    SERVICE_STOP_PENDING     = 0x00000003
+    SERVICE_RUNNING          = 0x00000004
+    SERVICE_CONTINUE_PENDING = 0x00000005
+    SERVICE_PAUSE_PENDING    = 0x00000006
+    SERVICE_PAUSED           = 0x00000007
 
     # Service accepted controls
-    SERVICE_ACCEPT_STOP             = 0x00000001
-    SERVICE_ACCEPT_PAUSE_CONTINUE   = 0x00000002
+    SERVICE_ACCEPT_STOP           = 0x00000001
+    SERVICE_ACCEPT_PAUSE_CONTINUE = 0x00000002
 
     # Service control manager access options
-    SC_MANAGER_CONNECT              = 0x0001
-    SC_MANAGER_ENUMERATE_SERVICE    = 0x0004
-    SC_MANAGER_ALL_ACCESS           = 0x000f003f
+    SC_MANAGER_CONNECT            = 0x0001
+    SC_MANAGER_ENUMERATE_SERVICE  = 0x0004
+    SC_MANAGER_ALL_ACCESS         = 0x000f003f
 
     # Service access options
-    SERVICE_QUERY_CONFIG           = 0x0001
-    SERVICE_CHANGE_CONFIG          = 0x0002
-    SERVICE_QUERY_STATUS           = 0x0004
-    SERVICE_ENUMERATE_DEPENDENTS   = 0x0008
-    SERVICE_START                  = 0x0010
-    SERVICE_STOP                   = 0x0020
-    SERVICE_PAUSE_CONTINUE         = 0x0040
-    SERVICE_INTERROGATE            = 0x0080
-    SERVICE_USER_DEFINED_CONTROL   = 0x0100
+    SERVICE_QUERY_CONFIG         = 0x0001
+    SERVICE_CHANGE_CONFIG        = 0x0002
+    SERVICE_QUERY_STATUS         = 0x0004
+    SERVICE_ENUMERATE_DEPENDENTS = 0x0008
+    SERVICE_START                = 0x0010
+    SERVICE_STOP                 = 0x0020
+    SERVICE_PAUSE_CONTINUE       = 0x0040
+    SERVICE_INTERROGATE          = 0x0080
+    SERVICE_USER_DEFINED_CONTROL = 0x0100
 
     # Service control codes
-    SERVICE_CONTROL_STOP			= 0x00000001
-    SERVICE_CONTROL_PAUSE			= 0x00000002
-    SERVICE_CONTROL_CONTINUE		= 0x00000003
-    SERVICE_CONTROL_INTERROGATE		= 0x00000004
-    SERVICE_CONTROL_PARAMCHANGE		= 0x00000006
-    SERVICE_CONTROL_NETBINDADD		= 0x00000007
-    SERVICE_CONTROL_NETBINDREMOVE	= 0x00000008
-    SERVICE_CONTROL_NETBINDENABLE	= 0x00000009
-    SERVICE_CONTROL_NETBINDDISABLE	= 0x0000000A
+    SERVICE_CONTROL_STOP           = 0x00000001
+    SERVICE_CONTROL_PAUSE          = 0x00000002
+    SERVICE_CONTROL_CONTINUE       = 0x00000003
+    SERVICE_CONTROL_INTERROGATE    = 0x00000004
+    SERVICE_CONTROL_PARAMCHANGE    = 0x00000006
+    SERVICE_CONTROL_NETBINDADD     = 0x00000007
+    SERVICE_CONTROL_NETBINDREMOVE  = 0x00000008
+    SERVICE_CONTROL_NETBINDENABLE  = 0x00000009
+    SERVICE_CONTROL_NETBINDDISABLE = 0x0000000A
 
     # Windows error codes
-    ERROR_INSUFFICIENT_BUFFER   = 122
-    GENERIC_EXECUTE             = 0x20000000
-    GENERIC_WRITE               = 0x40000000
-    GENERIC_READ                = 0x80000000  
+    ERROR_INSUFFICIENT_BUFFER = 122
+    GENERIC_EXECUTE           = 0x20000000
+    GENERIC_WRITE             = 0x40000000
+    GENERIC_READ              = 0x80000000  
+
 
     def declare_fnc(ct_dll, func_name, ret=None, args=[]):
         fnc = getattr(ct_dll, func_name)
         fnc.restype = ret
         fnc.argtypes = args
         return fnc
+
 
     _advapi32 = ct.windll.advapi32
 
@@ -126,17 +131,21 @@ class WinServiceUtils:
     _ControlServiceEx = declare_fnc(_advapi32, "ControlServiceExA", ct.c_bool,  \
         [ct.c_void_p, ct.c_ulong, ct.c_ulong, ct.POINTER(SERVICE_CONTROL_STATUS_REASON_PARAMS)])
 
+
     def __init__(self):
         pass
 
+
     def __enter__(self):
         return self
+
 
     def __exit__(self, exc_type, exc_value, traceback):
 #        handle = ADVAPI32._handle
 #        del ADVAPI32
 #        ct.windll.kernel32.FreeLibrary(handle)
         pass
+
 
     def ServiceStateText(self, state):
         if state == self.SERVICE_STOPPED:
@@ -156,23 +165,28 @@ class WinServiceUtils:
         else:
             return f"Unknown service state ({state})"
 
+
     #
     # advapi32.dll
     #
     def CloseServiceHandle(self, handle):
         return self._CloseServiceHandle(handle)
 
+
     def OpenSCManager(self, machine_name = None, database_name = None, desired_access = 0):
         machine_name = bytes(machine_name, "mbcs") if machine_name else None
         database_name = bytes(database_name, "mbcs") if database_name else None
         return self._OpenSCManager(machine_name, database_name, desired_access)
 
+
     def OpenService(self, scm_h, name, desired_access = 0):
         name = bytes(name, "mbcs") if name  else None
         return self._OpenService(scm_h, name, desired_access)
-    
+
+
     def WindowsError(self, text):
         return RuntimeError(f"{text}. {ct.WinError().strerror} (ct.WinError().winerror)")
+
 
     def QueryServiceStatusEx(self, name):
         scm_h = self.OpenSCManager(None, None, self.SC_MANAGER_CONNECT) #SC_MANAGER_CONNECT+SC_MANAGER_ENUMERATE_SERVICE+GENERIC_READ) SC_MANAGER_ALL_ACCESS
@@ -196,6 +210,7 @@ class WinServiceUtils:
             raise self.WindowsError(f"Failed to query status of service {name}")
 
         return status
+
 
     def EnumServicesStatus(self, service_type, service_state):
         scm_h = self.OpenSCManager(None, None, self.SC_MANAGER_CONNECT + self.SC_MANAGER_ENUMERATE_SERVICE)
@@ -221,6 +236,7 @@ class WinServiceUtils:
         self.CloseServiceHandle(scm_h)
 
         return { bytes.decode(svcs[i].service_name.lower(), "mbcs") : svcs[i] for i in range(services_returned.value) }
+
 
     def StopService(self, service_name):
         scm_h = self.OpenSCManager(None, None, self.SC_MANAGER_CONNECT + self.SERVICE_STOP)

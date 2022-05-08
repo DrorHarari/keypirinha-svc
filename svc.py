@@ -2,7 +2,6 @@ import keypirinha as kp
 import keypirinha_util as kpu
 import subprocess
 from .svcutil import *
-import os
 
 class Svc(kp.Plugin):
     # Categories
@@ -15,56 +14,50 @@ class Svc(kp.Plugin):
     ITEMACT_PAUSE    = "pause"
     ITEMACT_RESUME   = "resume"
     ITEMACT_STATUS   = "status"
-    
+
     _service_catalog = {}
     _wsu = None
-
 
     def __init__(self):
         super().__init__()
 
         self._wsu = WinServiceUtils()
 
+
     def on_start(self):
         pass
-                
+
+
     def on_activated(self):
         pass
+
 
     def on_deactivated(self):
         pass
 
+
     def on_events(self, flags):
         if flags & kp.Events.PACKCONFIG:
             self.on_catalog()
-        
+
+
     def on_catalog(self):
         self._service_catalog = self._wsu.EnumServicesStatus(0x30, 0x3)
 
-        # catalog = [
-            # self.create_item(
-                    # category = kp.ItemCategory.REFERENCE,
-                    # label = "Svc",
-                    # short_desc = "Work with Windows services",
-                    # target = "Svc",
-                    # args_hint = kp.ItemArgsHint.REQUIRED,
-                    # hit_hint = kp.ItemHitHint.NOARGS)
-        # ]
         catalog = []
         for (service_name, service) in self._service_catalog.items():
             catalog.append(
                 self.create_item(
                         category = kp.ItemCategory.REFERENCE,
                         label = f"Service {service_name}",
-                        short_desc = bytes.decode(service.display_name,"mbcs"),
+                        short_desc = bytes.decode(service.display_name, "mbcs"),
                         target = service_name,
                         args_hint = kp.ItemArgsHint.REQUIRED,
                         hit_hint = kp.ItemHitHint.NOARGS) )
-      
 
         self.set_catalog(catalog)
-       
- 
+
+
     def start_suggestion(self, service_name):
         return self.create_item(
                         category = self.ITEMCAT_SVCACTION,
@@ -73,7 +66,8 @@ class Svc(kp.Plugin):
                         target = f"{self.ITEMACT_START},{service_name}",
                         args_hint = kp.ItemArgsHint.FORBIDDEN,
                         hit_hint = kp.ItemHitHint.NOARGS)
-    
+
+
     def restart_suggestion(self, service_name):
         return self.create_item(
                         category = self.ITEMCAT_SVCACTION,
@@ -82,7 +76,8 @@ class Svc(kp.Plugin):
                         target = f"{self.ITEMACT_RESTART},{service_name}",
                         args_hint = kp.ItemArgsHint.FORBIDDEN,
                         hit_hint = kp.ItemHitHint.NOARGS)
-    
+
+
     def resume_suggestion(self, service_name):
         return self.create_item(
                         category = self.ITEMCAT_SVCACTION,
@@ -91,7 +86,8 @@ class Svc(kp.Plugin):
                         target = f"{self.ITEMACT_RESUME},{service_name}",
                         args_hint = kp.ItemArgsHint.FORBIDDEN,
                         hit_hint = kp.ItemHitHint.NOARGS)
-    
+
+
     def stop_suggestion(self, service_name):
         return self.create_item(
                         category = self.ITEMCAT_SVCACTION,
@@ -100,7 +96,8 @@ class Svc(kp.Plugin):
                         target = f"{self.ITEMACT_STOP},{service_name}",
                         args_hint = kp.ItemArgsHint.FORBIDDEN,
                         hit_hint = kp.ItemHitHint.NOARGS)
-    
+
+
     def pause_suggestion(self, service_name):
         return self.create_item(
                         category = self.ITEMCAT_SVCACTION,
@@ -109,7 +106,8 @@ class Svc(kp.Plugin):
                         target = f"{self.ITEMACT_PAUSE},{service_name}",
                         args_hint = kp.ItemArgsHint.FORBIDDEN,
                         hit_hint = kp.ItemHitHint.NOARGS)
-    
+
+
     def status_suggestion(self, service_name, wsu, service_status):
         return self.create_item(
                         category = self.ITEMCAT_SVCACTION,
@@ -118,7 +116,8 @@ class Svc(kp.Plugin):
                         target = f"{self.ITEMACT_STATUS},{service_name}",
                         args_hint = kp.ItemArgsHint.FORBIDDEN,
                         hit_hint = kp.ItemHitHint.NOARGS)
-    
+
+
     def on_suggest(self, user_input, items_chain):
         if not items_chain:
             return
@@ -146,6 +145,7 @@ class Svc(kp.Plugin):
 
         self.set_suggestions(suggestions, kp.Match.ANY, kp.Sort.NONE)
 
+
     def on_execute(self, item, kp_action):
         if not item:
             return
@@ -160,6 +160,7 @@ class Svc(kp.Plugin):
         else:
             print(f"Unimplemented action <{action}> on service {service_name}")
         #startup_info = subprocess.STARTUPINFO()
+
 
     def service_control(self, command, service_name):
         """Sending control command to a service using a call to Windows' sc.exe  with elevated rights
