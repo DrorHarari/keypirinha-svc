@@ -10,7 +10,7 @@ Open the LaunchBox and type:
 <partial-service-name> <tab-to-select-action>
 ```
 
-Only action that are relevant in the current state of the service are offered.
+Only actions that are relevant in the current state of the service are offered.
 
 ## Installation and Setup ##
 The easiest way to install Svc is to use the [PackageControl](https://github.com/ueffel/Keypirinha-PackageControl) plugin's InstallPackage command. 
@@ -31,4 +31,4 @@ For manual installation simply download the shell.keypirinha-package file from t
 ## Release Notes ##
 
 **V0.2**
-- Initial release
+- Initial release (missing actions - restart, status)
