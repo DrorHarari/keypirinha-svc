@@ -227,10 +227,10 @@ class WinServiceUtils:
         if not scm_h:
             raise self.WindowsError("Failed to open service control")
 
-        service_h = OpenService(self, scm_h, name, self.SERVICE_STOP)
+        service_h = self.OpenService(self, scm_h, service_name, self.SERVICE_STOP)
         if not service_h:
             self.CloseServiceHandle(scm_h)
-            raise self.WindowsError(f"Failed to open service {name} with Stop access")
+            raise self.WindowsError(f"Failed to open service {service_name} with Stop access")
 
         reason_params = SERVICE_CONTROL_STATUS_REASON_PARAMS()
 
