@@ -1,7 +1,7 @@
 import keypirinha as kp
 import keypirinha_util as kpu
 import subprocess
-from .svcutil import *
+from .lib.svcutil import *
 
 class Svc(kp.Plugin):
     # Categories
