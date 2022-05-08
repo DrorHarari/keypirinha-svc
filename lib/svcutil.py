@@ -112,23 +112,23 @@ class WinServiceUtils:
 
     _advapi32 = ct.windll.advapi32
 
-    _OpenSCManager = declare_fnc(_advapi32, "OpenSCManagerA", ct.c_void_p,          \
+    _OpenSCManager = declare_fnc(_advapi32, "OpenSCManagerA", ct.c_void_p,
         [ct.c_char_p, ct.c_char_p, ct.c_ulong])
 
-    _OpenService = declare_fnc(_advapi32, "OpenServiceA", ct.c_void_p,              \
+    _OpenService = declare_fnc(_advapi32, "OpenServiceA", ct.c_void_p,
         [ct.c_void_p, ct.c_char_p, ct.c_ulong])
 
-    _CloseServiceHandle = declare_fnc(_advapi32, "CloseServiceHandle", ct.c_bool,   \
+    _CloseServiceHandle = declare_fnc(_advapi32, "CloseServiceHandle", ct.c_bool,
         [ct.c_void_p])
 
-    SC_STATUS_PROCESS_INFO = 0  # QueryServiceStatusEx level 
-    _QueryServiceStatusEx = declare_fnc(_advapi32, "QueryServiceStatusEx",  ct.c_bool,  \
+    SC_STATUS_PROCESS_INFO = 0  # QueryServiceStatusEx level
+    _QueryServiceStatusEx = declare_fnc(_advapi32, "QueryServiceStatusEx",  ct.c_bool,
         [ct.c_void_p, ct.c_ulong, ct.POINTER(SERVICE_STATUS_PROCESS), ct.c_void_p, ct.c_void_p])
 
-    _EnumServicesStatus = declare_fnc(_advapi32, "EnumServicesStatusA", ct.c_bool,  \
+    _EnumServicesStatus = declare_fnc(_advapi32, "EnumServicesStatusA", ct.c_bool,
         [ct.c_void_p, ct.c_ulong, ct.c_ulong, ct.c_char_p, ct.c_ulong, ct.c_void_p, ct.c_void_p, ct.c_void_p])
 
-    _ControlServiceEx = declare_fnc(_advapi32, "ControlServiceExA", ct.c_bool,  \
+    _ControlServiceEx = declare_fnc(_advapi32, "ControlServiceExA", ct.c_bool,
         [ct.c_void_p, ct.c_ulong, ct.c_ulong, ct.POINTER(SERVICE_CONTROL_STATUS_REASON_PARAMS)])
 
 
@@ -173,14 +173,14 @@ class WinServiceUtils:
         return self._CloseServiceHandle(handle)
 
 
-    def OpenSCManager(self, machine_name = None, database_name = None, desired_access = 0):
+    def OpenSCManager(self, machine_name=None, database_name=None, desired_access=0):
         machine_name = bytes(machine_name, "mbcs") if machine_name else None
         database_name = bytes(database_name, "mbcs") if database_name else None
         return self._OpenSCManager(machine_name, database_name, desired_access)
 
 
-    def OpenService(self, scm_h, name, desired_access = 0):
-        name = bytes(name, "mbcs") if name  else None
+    def OpenService(self, scm_h, name, desired_access=0):
+        name = bytes(name, "mbcs") if name else None
         return self._OpenService(scm_h, name, desired_access)
 
 
@@ -189,7 +189,7 @@ class WinServiceUtils:
 
 
     def QueryServiceStatusEx(self, name):
-        scm_h = self.OpenSCManager(None, None, self.SC_MANAGER_CONNECT) #SC_MANAGER_CONNECT+SC_MANAGER_ENUMERATE_SERVICE+GENERIC_READ) SC_MANAGER_ALL_ACCESS
+        scm_h = self.OpenSCManager(None, None, self.SC_MANAGER_CONNECT)
         if not scm_h:
             raise self.WindowsError("Failed to open service control")
 

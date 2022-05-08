@@ -3,18 +3,18 @@ from pathlib import Path
 import os
 import zipfile
 
-PACKAGE_NAME="svc"
-FILES=[f"{PACKAGE_NAME}.py", f"{PACKAGE_NAME}.ico", f"{PACKAGE_NAME}.ini", 
+PACKAGE_NAME = "svc"
+FILES = [f"{PACKAGE_NAME}.py", f"{PACKAGE_NAME}.ico", f"{PACKAGE_NAME}.ini", 
        "lib/svcutil.py", "LICENSE"]
 
 ETC_FOLDER=Path(__file__).parent
-PACKAGE_FOLDER=ETC_FOLDER.parent
-PACKAGE_FILE=Path.joinpath(PACKAGE_FOLDER, f"{PACKAGE_NAME.capitalize()}.keypirinha-package")
+PACKAGE_FOLDER = ETC_FOLDER.parent
+PACKAGE_FILE = Path.joinpath(PACKAGE_FOLDER, f"{PACKAGE_NAME.capitalize()}.keypirinha-package")
 
 print(f"Creating package file {PACKAGE_FILE}")
 
 try:
-    zf = zipfile.ZipFile(PACKAGE_FILE,'w',zipfile.ZIP_DEFLATED)
+    zf = zipfile.ZipFile(PACKAGE_FILE, 'w', zipfile.ZIP_DEFLATED)
     for f in FILES:
         zf.write(Path.joinpath(Path('..'), f), f)
 
