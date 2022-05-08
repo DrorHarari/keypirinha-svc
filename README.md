@@ -7,10 +7,10 @@ This plugin for Keypirinha lets you work with Windows services.
 ## Usage ##
 Open the LaunchBox and type:
 ```
-Svc <tab> <partial-service-name> <tab-to-select-action>
+<partial-service-name> <tab-to-select-action>
 ```
 
-
+Only action that are relevant in the current state of the service are offered.
 
 ## Installation and Setup ##
 The easiest way to install Svc is to use the [PackageControl](https://github.com/ueffel/Keypirinha-PackageControl) plugin's InstallPackage command. 
@@ -30,5 +30,5 @@ For manual installation simply download the shell.keypirinha-package file from t
 
 ## Release Notes ##
 
-**V0.1**
+**V0.2**
 - Initial release
