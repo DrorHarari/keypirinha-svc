@@ -53,6 +53,6 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./etc/Shell.keypirinha-package
-        asset_name: Shell.keypirinha-package
+        asset_path: ./etc/Svc.keypirinha-package
+        asset_name: Svc.keypirinha-package
         asset_content_type: application/zip
